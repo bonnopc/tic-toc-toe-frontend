@@ -7,6 +7,7 @@ import configureStore from "store";
 import GameContainer from 'modules/game/containers/GameContainer';
 import { Theme } from 'config';
 import DefaultLayout from 'layouts/DefaultLayout';
+import RehydrationCheckPost from './RehydrationCheckPost';
 
 const { store } = configureStore();
 
@@ -16,12 +17,14 @@ WebFont.load({
     }
 })
 
-function App() {
+function App(props) {
     return (
         <Provider store={store}>
             <ThemeProvider theme={Theme} >
                 <DefaultLayout>
-                    <GameContainer/>
+                    <RehydrationCheckPost {...props} >
+                        <GameContainer/>
+                    </RehydrationCheckPost>
                 </DefaultLayout>
             </ThemeProvider>
         </Provider>

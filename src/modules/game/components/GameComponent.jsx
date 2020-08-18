@@ -43,17 +43,36 @@ const useStyles = createUseStyles({
 })
 
 export default function GameComponent(props){
-    const classes = useStyles()
+    const classes = useStyles();
+
+    const handleUpdateGame = async (rowIndex,colIndex) => {
+        console.log({rowIndex,colIndex})
+
+        const gameResponse = await props.actionCreateOrUpdateGame({
+            rowIndex,
+            colIndex,
+            isXturn: props.game.isXturn,
+            gameUid: props.game.uid
+        });
+
+        if(gameResponse?.statusCode === 200 && gameResponse.result?.uid) props.actionGetGameLogs(gameResponse.result?.uid)
+    }
 
     return (
         <Fragment>
-            <Header/>
+            <Header {...props} />
             <div className={classes.container}>
                 <div className="playground">
-                    <PlayGround/>
+                    <PlayGround
+                        updateGame={handleUpdateGame}
+                        data={props.game.data}
+                    />
                 </div>
                 <div className="game-log">
-                    <GameLog/>
+                    <GameLog
+                        logs={props.game.logs}
+                        data={props.game.data}
+                    />
                 </div>
             </div>
         </Fragment>

@@ -1,53 +1,10 @@
 import React, { memo } from "react"
 import { createUseStyles, useTheme } from "react-jss";
 
-const results = [
-    {
-        rowIndex: 0,
-        colIndex: 0,
-        value: null
-    },
-    {
-        rowIndex: 0,
-        colIndex: 1,
-        value: null
-    },
-    {
-        rowIndex: 0,
-        colIndex: 2,
-        value: null
-    },
-    {
-        rowIndex: 1,
-        colIndex: 0,
-        value: null
-    },
-    {
-        rowIndex: 1,
-        colIndex: 1,
-        value: 'X'
-    },
-    {
-        rowIndex: 1,
-        colIndex: 2,
-        value: null
-    },
-    {
-        rowIndex: 2,
-        colIndex: 0,
-        value: null
-    },
-    {
-        rowIndex: 2,
-        colIndex: 1,
-        value: 'O'
-    },
-    {
-        rowIndex: 2,
-        colIndex: 2,
-        value: null
-    }
-];
+const getDynamicColor = val => {
+    if(val === 'O') return { color: '#F2EBD3' };
+    return {};
+}
 
 const getDynamicBorder = (rowIndex, colIndex) => {
     let style = {}
@@ -100,9 +57,13 @@ const useStyles = createUseStyles(theme => ({
     }
 }))
 
-function PlayBox({ classes, rowIndex, colIndex, value }){
+function PlayBox({ classes, rowIndex, colIndex, value, addValue }){
     return (
-        <div className={`${classes.box}`} style={getDynamicBorder(rowIndex,colIndex)}>
+        <div 
+            className={`${classes.box}`} 
+            style={{ ...getDynamicBorder(rowIndex,colIndex), ...getDynamicColor(value) }}
+            onClick={value ? null : addValue}
+        >
             { value }
         </div>
     )
@@ -112,11 +73,15 @@ function PlayGround(props){
     const theme = useTheme(), classes = useStyles({ theme })
 
     const getValueByBox = (rowIndex, colIndex) => {
-        if(results?.filter(result => result.rowIndex === rowIndex && result.colIndex === colIndex)?.length){
-            return results.filter(result => result.rowIndex === rowIndex && result.colIndex === colIndex)[0].value
+        if(props.data?.scores?.filter(score => score.rowIndex === rowIndex && score.colIndex === colIndex)?.length){
+            return props.data.scores.filter(score => score.rowIndex === rowIndex && score.colIndex === colIndex)[0].value
         }
 
         return null
+    }
+
+    const handleClickBox = (rowIndex,colIndex) => {
+        props.updateGame(rowIndex,colIndex)
     }
 
     return (
@@ -130,6 +95,8 @@ function PlayGround(props){
                             colIndex={colIndex}
                             classes={classes}
                             value={getValueByBox(rowIndex,colIndex)}
+                            addValue={() => handleClickBox(rowIndex,colIndex)}
+                            data={props.data}
                         />
                     ))
                 })

@@ -1,34 +1,52 @@
-import React, { memo } from "react"
-import { createUseStyles } from "react-jss";
+import React, { memo, Fragment } from "react"
+import { createUseStyles, useTheme } from "react-jss";
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
     container: {
         display: 'flex',
         flexDirection: 'column',
         textAlign: 'right'
+    },
+    winnerDiv: {
+        color: '#ffffff',
+        fontSize: "5rem"
     }
-})
+}))
 
-const LogItem = ({ classes }) => (
+const LogItem = ({ classes, log }) => (
     <div className={classes.logItemContainer}>
-        <div>X is placed on row 3, column 2</div>
+        <div>{ log.value } is placed on row { log.rowIndex + 1 }, column { log.colIndex + 1 }</div>
     </div>
 ) 
 
-function GameLog(props){
-    const classes = useStyles()
+function GameLog({ data, logs }){
+    const theme = useTheme(),classes = useStyles({ theme })
 
     return (
         <div className={classes.container}>
-            <h3>Game Log</h3>
             {
-                [0,1].map(item => (
-                    <LogItem 
-                        key={item}
-                        classes={classes}
-                    />
-                ))
+                data?.winner &&
+                <h1 className={classes.winnerDiv}>
+                    Winner is '{ data.winner }'
+                </h1>
             }
+            {
+                logs?.length &&
+                <Fragment>
+                    <h3>Game Log</h3>
+                    {
+                        logs.map((log,i) => (
+                            <LogItem 
+                                key={i}
+                                classes={classes}
+                                log={log}
+                            />
+                        ))
+                    }
+                </Fragment>
+            }
+            
+            
         </div>
     )
 }

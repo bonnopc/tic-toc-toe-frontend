@@ -49,9 +49,14 @@ function Header(props){
         <header className={classes.container}>
             <h1>Tic Toc Toe</h1>
             <div className={classes.statHeader}>
-                <div>X's turn</div>
-                <div className="active">O's turn</div>
-                <div className='button'>Reset Game</div>
+                <div className={props.game.isXturn ? "active" : ""}>X's turn</div>
+                <div className={props.game.isXturn ? "" : "active"}>O's turn</div>
+                <div 
+                    className='button'
+                    onClick={() => props.actionResetGame()}
+                >
+                    Reset Game
+                </div>
             </div>
         </header>
     )
